@@ -13,21 +13,6 @@ import axios from '../../service/http/HttpService';
 import NavigationService from '../../service/navigation/NavigationService';
 
 const AddButton = ({toDoList, navigation, open}) => {
-  //   const addItem = async () => {
-  //     try {
-  //       await axios
-  //         .post('/items', {
-  //           id: toDoList.length + 1,
-  //           title: 'Axios in React Native',
-  //           description:
-  //             'If any error occurs, then the catch statement will get that error.',
-  //         })
-  //         .then(response => console.log('response : ', response.data));
-  //     } catch (error) {
-  //       console.error('Error fetching data:', error);
-  //     }
-  //   };
-
   return (
     <TouchableOpacity
       style={styles.container}

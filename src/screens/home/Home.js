@@ -79,15 +79,27 @@ export default class HomeScreen extends React.Component {
         description: '',
         status: false,
       },
+      fetching: false,
+      intervalId: null,
     };
   }
   componentDidMount() {
     this.fetchData();
+    // const intervalId = setInterval(this.fetchData, 3000); // Call fetchData every 3 seconds
+    // this.setState({intervalId});
   }
 
-  componentDidUpdate() {
-    this.fetchData();
+  componentDidUpdate(prevProps, prevState) {
+    // this.fetchData();
     // this.deleteData();
+    if (prevState.fetching && !this.state.fetching) {
+      // this.fetchData();
+      clearInterval(this.state.intervalId);
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.state.intervalId); // Clear the interval when the component is unmounted
   }
 
   navigationButton = () => {
@@ -96,12 +108,17 @@ export default class HomeScreen extends React.Component {
   };
 
   fetchData = async () => {
+    this.setState({fetching: true});
     try {
+      // await new Promise(resolve => setTimeout(resolve, 1000));
       await axios
         .get('/items')
-        .then(response => this.setState({toDoList: response.data}));
+        .then(response =>
+          this.setState({toDoList: response.data, fetching: false}),
+        );
     } catch (error) {
       console.error('Error fetching data:', error);
+      this.setState({fetching: false});
     }
   };
 
@@ -111,6 +128,7 @@ export default class HomeScreen extends React.Component {
         console.log('deleted', response.data);
         response.data;
       });
+      await this.fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -122,6 +140,8 @@ export default class HomeScreen extends React.Component {
         console.log('updated data : ', response.data);
         response.data;
       });
+
+      await this.fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -132,13 +152,27 @@ export default class HomeScreen extends React.Component {
       await axios
         .post('/items', newData)
         .then(response => console.log('response : ', response.data));
+
+      await this.fetchData();
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
   open = () => {
-    this.setState({valueVisible: true});
+    this.setState({
+      valueVisible: true,
+      item: null,
+    });
+  };
+
+  openNotes = (id, item, status) => {
+    this.setState({
+      valueVisible: true,
+      idSelected: id,
+      item: item,
+      itemStatus: status === 0 ? false : true,
+    });
   };
 
   close = () => {
@@ -219,7 +253,8 @@ export default class HomeScreen extends React.Component {
                   style={styles.flatlist}
                   onPress={() => {
                     // console.warn('Giving item status : ', item.status);
-                    this.openBottomNav(item.id, item.status, item);
+                    // this.openBottomNav(item.id, item.status, item);
+                    this.openNotes(item.id, item, item.status);
                   }}>
                   {item.status === 1 ? (
                     <View style={styles.flatlistComplete} />
@@ -266,6 +301,11 @@ export default class HomeScreen extends React.Component {
           close={this.close}
           addItem={this.addItem}
           toDoList={this.state.toDoList}
+          item={this.state.item}
+          idSelected={this.state.idSelected}
+          status={this.state.itemStatus}
+          updateData={this.updateData}
+          deleteData={this.deleteData}
         />
       </View>
     );
@@ -312,7 +352,7 @@ const styles = StyleSheet.create({
   },
   flatlist: {
     width: THEME.deviceWidth * 0.9,
-    height: THEME.deviceHeight * 0.1,
+    height: THEME.deviceHeight * 0.09,
     backgroundColor: THEME.colors.sub_primary,
     opacity: 1,
     justifyContent: 'center',
@@ -327,7 +367,7 @@ const styles = StyleSheet.create({
   },
   flatlistComplete: {
     width: THEME.deviceWidth * 0.9,
-    height: THEME.deviceHeight * 0.1,
+    height: THEME.deviceHeight * 0.09,
     backgroundColor: THEME.colors.dark,
     opacity: 0.6,
     position: 'absolute',
