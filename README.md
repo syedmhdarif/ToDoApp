@@ -81,8 +81,11 @@ An application to add a new task to be perform. This application use React Nativ
 ## Installation
 
 ### Database/server
-1. cd To-Do-app && cd backend
-2. npm install && npm start
+```bash
+cd To-Do-app && cd backend
+
+npm install && npm start
+```
 
 ### Frontend - ToDoApp 
 You may also clone the application from this repository or get it from here: https://github.com/syedmhdarif/ToDoApp
