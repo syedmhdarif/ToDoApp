@@ -37,18 +37,18 @@ const AddNewItemScreen = ({
     // }
   }, [item]);
 
-  // const cleanup = () => {
-  //   setItem([null]);
-  // };
-
   const randomId = () => {
     const random = '123456789';
+    const min = 1000000;
+    const max = 9999999;
     let key = 0;
-    for (let i = 0; i < 32; i += 1) {
-      key += Math.floor(Math.random() * random.length);
-    }
 
-    return key;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+    // for (let i = 0; i < 9; i++) {
+    //   return Math.floor(Math.random() * (max - min + 1)) + min;
+    // }
+
+    // return key;
   };
 
   return (
