@@ -82,9 +82,14 @@ An application to add a new task to be perform. This application use React Nativ
 
 ### Database/server
 ```bash
+#Navigate to the project file
 cd To-Do-app && cd backend
 
-npm install && npm start
+#Install the packages
+npm install
+
+#run the project
+npm start
 ```
 
 ### Frontend - ToDoApp 
